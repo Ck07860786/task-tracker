@@ -24,11 +24,20 @@ export default function Login() {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 6) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(formData.email.trim())) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -44,9 +53,18 @@ export default function Login() {
       toast.success('Welcome back!');
       navigate('/dashboard', { replace: true });
     } catch (error) {
-      const message =
-        error.response?.data?.message || 'Login failed. Please try again.';
-      toast.error(message);
+      const responseData = error.response?.data;
+      if (responseData?.errors && Array.isArray(responseData.errors)) {
+        const fieldErrors = {};
+        responseData.errors.forEach((err) => {
+          fieldErrors[err.field] = err.message;
+        });
+        setErrors(fieldErrors);
+      } else {
+        const message = responseData?.message || 'Invalid email or password.';
+        setErrors({ email: message });
+      }
+      toast.error(responseData?.message || 'Login failed. Please check your credentials.');
     } finally {
       setSubmitting(false);
     }
@@ -54,7 +72,7 @@ export default function Login() {
 
   return (
     <AuthLayout>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <FormInput
           id="email"
           label="Email"
