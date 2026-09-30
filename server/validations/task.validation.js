@@ -11,6 +11,13 @@ export const createTaskSchema = z.object({
         .max(1000, 'Description must be under 1000 characters')
         .optional()
         .default(''),
+    status: z
+        .enum(['Pending', 'In Progress', 'Completed'])
+        .optional(),
+    timeSpent: z
+        .number()
+        .min(0)
+        .optional(),
 });
 
 
@@ -28,5 +35,9 @@ export const updateTaskSchema = z.object({
         .enum(['Pending', 'In Progress', 'Completed'], {
             message: 'Status must be Pending, In Progress, or Completed',
         })
+        .optional(),
+    timeSpent: z
+        .number()
+        .min(0)
         .optional(),
 });
