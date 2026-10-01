@@ -48,7 +48,10 @@ export default function Login() {
 
     setSubmitting(true);
     try {
-      const { data } = await loginUser(formData);
+      const { data } = await loginUser({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
       login(data.data.user, data.data.token);
       toast.success('Welcome back!');
       navigate('/dashboard', { replace: true });

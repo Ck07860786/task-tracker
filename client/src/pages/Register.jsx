@@ -24,12 +24,30 @@ export default function Register() {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+
+    if (!trimmedName) {
+      newErrors.name = 'Name is required';
+    } else if (trimmedName.length < 2) {
+      newErrors.name = 'Name must be at least 2 characters long';
+    } else if (trimmedName.length > 50) {
+      newErrors.name = 'Name must be less than 50 characters long';
     }
+
+    if (!trimmedEmail) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(trimmedEmail)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters long';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -40,14 +58,37 @@ export default function Register() {
 
     setSubmitting(true);
     try {
-      const { data } = await registerUser(formData);
+      const { data } = await registerUser({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+      });
       login(data.data.user, data.data.token);
       toast.success('Account created successfully!');
       navigate('/dashboard', { replace: true });
     } catch (error) {
-      const message =
-        error.response?.data?.message || 'Registration failed. Please try again.';
-      toast.error(message);
+      const responseData = error.response?.data;
+      if (responseData?.errors && Array.isArray(responseData.errors)) {
+        const fieldErrors = {};
+        responseData.errors.forEach((err) => {
+          if (err.field) {
+            fieldErrors[err.field] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+        toast.error('Please correct the highlighted fields.');
+      } else if (
+        error.response?.status === 409 ||
+        responseData?.message?.toLowerCase().includes('already exists')
+      ) {
+        const message = responseData?.message || 'User with this email already exists.';
+        setErrors((prev) => ({ ...prev, email: message }));
+        toast.error(message);
+      } else {
+        const message =
+          responseData?.message || 'Registration failed. Please try again.';
+        toast.error(message);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -55,7 +96,7 @@ export default function Register() {
 
   return (
     <AuthLayout>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <FormInput
           id="name"
           label="Name"
