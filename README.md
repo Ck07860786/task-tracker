@@ -12,6 +12,23 @@ Built as part of the Full Stack Engineer technical evaluation for Suntek.AI.
 
 **Backend API:** https://task-tracker-je25.onrender.com/
 
+## 📸 Application Screenshots
+
+### 📋 Task Management & Time Tracking
+<img width="1881" height="852" alt="Screenshot 2026-10-01 112632" src="https://github.com/user-attachments/assets/5c8ecd1b-6814-4db2-bfa9-f509b6296ef0" />
+
+
+
+
+### 📊 Productivity Charts (Status Distribution & Focus Time)
+<img width="1876" height="857" alt="Screenshot 2026-10-01 112719" src="https://github.com/user-attachments/assets/054652a3-dfc5-4981-a5fc-199ec3c412fd" />
+
+
+### 📅 Weekly Summary & Trends
+<img width="1877" height="857" alt="Screenshot 2026-10-01 112746" src="https://github.com/user-attachments/assets/0caeb0f8-08b0-4123-95ac-3eb42f94740a" />
+
+
+
 ### Local Development
 
 1. Clone the repository:
