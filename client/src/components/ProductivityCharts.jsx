@@ -14,7 +14,6 @@ import {
   CartesianGrid,
 } from 'recharts';
 
-
 const STATUS_COLORS = {
   Completed: '#059669',
   'In Progress': '#3b82f6',
@@ -22,7 +21,6 @@ const STATUS_COLORS = {
 };
 
 export default function ProductivityCharts({ tasks = [] }) {
-
   const pieData = useMemo(() => {
     const counts = { Completed: 0, 'In Progress': 0, Pending: 0 };
     tasks.forEach((t) => {
@@ -34,7 +32,6 @@ export default function ProductivityCharts({ tasks = [] }) {
       { name: 'Pending', value: counts.Pending },
     ];
   }, [tasks]);
-
 
   const validPieData = useMemo(() => {
     return pieData.filter((d) => d.value > 0);
@@ -68,7 +65,6 @@ export default function ProductivityCharts({ tasks = [] }) {
     }
 
     const maxSeconds = Math.max(...days.map((d) => d.seconds), 0);
-
     const useSeconds = maxSeconds < 300;
 
     const formattedData = days.map((d) => ({
@@ -85,7 +81,6 @@ export default function ProductivityCharts({ tasks = [] }) {
     };
   }, [tasks]);
 
-  // Summary stats
   const totalTimeTracked = tasks.reduce((sum, t) => sum + (t.timeSpent || 0), 0);
   const completedCount = tasks.filter((t) => t.status === 'Completed').length;
   const avgTimePerTask = tasks.length > 0 ? Math.round(totalTimeTracked / tasks.length) : 0;
@@ -93,8 +88,7 @@ export default function ProductivityCharts({ tasks = [] }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.04)] min-w-0 flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-gray-900 mb-1">Task Status Distribution</h3>
@@ -157,7 +151,6 @@ export default function ProductivityCharts({ tasks = [] }) {
                 </div>
               </div>
 
-
               <div className="w-full flex items-center justify-center gap-4 flex-wrap pt-3 border-t border-gray-100 mt-1">
                 {pieData.map((item) => {
                   const pct = tasks.length > 0 ? Math.round((item.value / tasks.length) * 100) : 0;
@@ -208,7 +201,6 @@ export default function ProductivityCharts({ tasks = [] }) {
         </div>
       </div>
 
-      {/*Bar Chart Last 7 Days */}
       <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.04)] min-w-0">
         <div className="flex items-center justify-between mb-4">
           <div>

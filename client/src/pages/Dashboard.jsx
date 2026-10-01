@@ -12,7 +12,7 @@ import TimeLogs from '../components/TimeLogs';
 import ProductivityCharts from '../components/ProductivityCharts';
 import WeeklySummary from '../components/WeeklySummary';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { CheckSquare, Calendar, History, BarChart3, CalendarDays } from 'lucide-react';
+import { CheckSquare, Calendar, History, BarChart3, CalendarDays, Menu, Clock } from 'lucide-react';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -22,6 +22,7 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const [activeTimerTaskId, setActiveTimerTaskId] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -164,7 +165,7 @@ export default function Dashboard() {
     },
     summary: {
       title: 'Daily Summary',
-      subtitle: 'Review today\u2019s productivity and tracked hours',
+      subtitle: "Review today's productivity and tracked hours",
       icon: Calendar,
     },
     charts: {
@@ -192,71 +193,99 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex text-gray-900">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row text-gray-900">
       <Sidebar
         activeNav={activeNav}
         setActiveNav={setActiveNav}
         userEmail={user?.email || ''}
         onLogout={handleLogout}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
       />
 
-      <main className="flex-1 p-8 sm:p-10 max-w-4xl overflow-y-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-9 h-9 rounded-xl bg-white border border-gray-200/90 shadow-2xs flex items-center justify-center text-gray-700">
-            <HeaderIcon className="w-4 h-4" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900 leading-tight">
-              {currentHeader.title}
-            </h1>
-            <p className="text-xs text-gray-500 font-medium">
-              {currentHeader.subtitle}
-            </p>
-          </div>
-        </div>
-
-        {activeNav === 'tasks' && (
-          <div>
-            <TaskInput onAddTask={handleAddTask} />
-            <TaskFilter
-              currentFilter={filter}
-              onFilterChange={setFilter}
-              counts={counts}
-            />
-
-            {filteredTasks.length === 0 ? (
-              <div className="bg-white rounded-2xl p-10 border border-gray-100 text-center shadow-2xs">
-                <CheckSquare className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                <p className="text-xs text-gray-400 font-medium">
-                  {filter === 'All'
-                    ? 'No tasks yet. Type a task above to get started!'
-                    : `No tasks found with status "${filter}".`}
-                </p>
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200/80 sticky top-0 z-30">
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              className="p-2 -ml-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-[#0f172a] text-white rounded-lg flex items-center justify-center">
+                <Clock className="w-4 h-4" />
               </div>
-            ) : (
-              <div>
-                {filteredTasks.map((task) => (
-                  <TaskCard
-                    key={task._id}
-                    task={task}
-                    isTimerRunning={activeTimerTaskId === task._id}
-                    elapsedSeconds={elapsedSeconds}
-                    onToggleTimer={handleToggleTimer}
-                    onStatusChange={handleStatusChange}
-                    onUpdateTask={handleUpdateTask}
-                    onDelete={handleDeleteTask}
-                  />
-                ))}
-              </div>
-            )}
+              <span className="font-bold text-sm text-gray-900">TimeFlow</span>
+            </div>
           </div>
-        )}
 
-        {activeNav === 'summary' && <DailySummary tasks={tasks} />}
-        {activeNav === 'charts' && <ProductivityCharts tasks={tasks} />}
-        {activeNav === 'weekly' && <WeeklySummary tasks={tasks} />}
-        {activeNav === 'logs' && <TimeLogs tasks={tasks} />}
-      </main>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-500 font-medium truncate max-w-[140px] sm:max-w-[200px]">
+              {user?.email}
+            </span>
+          </div>
+        </header>
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 xl:p-10 w-full min-w-0 overflow-y-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-9 h-9 rounded-xl bg-white border border-gray-200/90 shadow-2xs flex items-center justify-center text-gray-700 shrink-0">
+              <HeaderIcon className="w-4 h-4" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 leading-tight">
+                {currentHeader.title}
+              </h1>
+              <p className="text-xs text-gray-500 font-medium">
+                {currentHeader.subtitle}
+              </p>
+            </div>
+          </div>
+
+          {activeNav === 'tasks' && (
+            <div>
+              <TaskInput onAddTask={handleAddTask} />
+              <TaskFilter
+                currentFilter={filter}
+                onFilterChange={setFilter}
+                counts={counts}
+              />
+
+              {filteredTasks.length === 0 ? (
+                <div className="bg-white rounded-2xl p-10 border border-gray-100 text-center shadow-2xs">
+                  <CheckSquare className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                  <p className="text-xs text-gray-400 font-medium">
+                    {filter === 'All'
+                      ? 'No tasks yet. Type a task above to get started!'
+                      : `No tasks found with status "${filter}".`}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredTasks.map((task) => (
+                    <TaskCard
+                      key={task._id}
+                      task={task}
+                      isTimerRunning={activeTimerTaskId === task._id}
+                      elapsedSeconds={elapsedSeconds}
+                      onToggleTimer={handleToggleTimer}
+                      onStatusChange={handleStatusChange}
+                      onUpdateTask={handleUpdateTask}
+                      onDelete={handleDeleteTask}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeNav === 'summary' && <DailySummary tasks={tasks} />}
+          {activeNav === 'charts' && <ProductivityCharts tasks={tasks} />}
+          {activeNav === 'weekly' && <WeeklySummary tasks={tasks} />}
+          {activeNav === 'logs' && <TimeLogs tasks={tasks} />}
+        </main>
+      </div>
     </div>
   );
 }

@@ -158,7 +158,7 @@ export default function TaskCard({
             &quot;{task.title.toLowerCase()}&quot;
           </p>
 
-          <div className="flex items-center gap-3 mt-4">
+          <div className="flex items-center gap-3 mt-4 flex-wrap">
             <div className="relative" ref={dropdownRef}>
               <button
                 type="button"

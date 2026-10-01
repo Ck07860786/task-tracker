@@ -69,7 +69,6 @@ export default function WeeklySummary({ tasks = [] }) {
     };
   }, [tasks]);
 
-  // Daily breakdown 
   const dailyBreakdown = useMemo(() => {
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const thisWeek = getWeekRange(0);
