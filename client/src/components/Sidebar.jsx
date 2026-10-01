@@ -1,4 +1,4 @@
-import { Clock, CheckSquare, Calendar, History, LogOut } from 'lucide-react';
+import { Clock, CheckSquare, Calendar, History, LogOut, BarChart3, CalendarDays } from 'lucide-react';
 
 export default function Sidebar({
   activeNav,
@@ -9,6 +9,8 @@ export default function Sidebar({
   const navItems = [
     { id: 'tasks', label: 'Tasks', icon: CheckSquare },
     { id: 'summary', label: 'Daily Summary', icon: Calendar },
+    { id: 'charts', label: 'Charts', icon: BarChart3 },
+    { id: 'weekly', label: 'Weekly Summary', icon: CalendarDays },
     { id: 'logs', label: 'Time Logs', icon: History },
   ];
 

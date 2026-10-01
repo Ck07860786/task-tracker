@@ -9,8 +9,10 @@ import TaskFilter from '../components/TaskFilter';
 import TaskCard from '../components/TaskCard';
 import DailySummary from '../components/DailySummary';
 import TimeLogs from '../components/TimeLogs';
+import ProductivityCharts from '../components/ProductivityCharts';
+import WeeklySummary from '../components/WeeklySummary';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { CheckSquare, Calendar, History } from 'lucide-react';
+import { CheckSquare, Calendar, History, BarChart3, CalendarDays } from 'lucide-react';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -162,8 +164,18 @@ export default function Dashboard() {
     },
     summary: {
       title: 'Daily Summary',
-      subtitle: 'Review today’s productivity and tracked hours',
+      subtitle: 'Review today\u2019s productivity and tracked hours',
       icon: Calendar,
+    },
+    charts: {
+      title: 'Productivity Charts',
+      subtitle: 'Visualize your task distribution and daily focus time',
+      icon: BarChart3,
+    },
+    weekly: {
+      title: 'Weekly Summary',
+      subtitle: 'Track your week-over-week progress and trends',
+      icon: CalendarDays,
     },
     logs: {
       title: 'Time Logs',
@@ -241,6 +253,8 @@ export default function Dashboard() {
         )}
 
         {activeNav === 'summary' && <DailySummary tasks={tasks} />}
+        {activeNav === 'charts' && <ProductivityCharts tasks={tasks} />}
+        {activeNav === 'weekly' && <WeeklySummary tasks={tasks} />}
         {activeNav === 'logs' && <TimeLogs tasks={tasks} />}
       </main>
     </div>
